@@ -1,3 +1,5 @@
+package small2048game;
+
 import java.util.Arrays;
 import java.util.InputMismatchException;
 
@@ -169,3 +171,4 @@ public class Grid {
 class Game {
     // todo
 }
+
