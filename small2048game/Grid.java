@@ -4,24 +4,34 @@ import java.util.Arrays;
 import java.util.InputMismatchException;
 
 public class Grid {
-    int h;  // grid height
-    int w;  // grid width
     int[][] cells;
 
     Grid () {
-        this.h = 4;
-        this.w = 4;
-        this.cells = new int[this.h][this.w];
+        int height = 4;
+        int width = 4;
+        this.cells = new int[height][width];
+    }
+
+    int h() { // height of the grid
+        return this.cells.length;
+    }
+
+    int w() { // width of the grid
+        if (this.cells.length == 0) {
+            return 0;
+        } else {
+            return this.cells[0].length;
+        }
     }
 
     boolean isBlocked() { // checks if the grid is blocked (game over)
-        for (int i=0; i<this.h; i++) {
-            for (int j=0; j<this.w; j++) {
-                if (this.cells[i][j] == 0) {
+        for (int i=0; i<this.h(); i++) {
+            for (int j=0; j<this.w(); j++) {
+                if (this.cells[i][j] == 0) { // blocked if cells equal to 0
                     return false;
-                } else if (i < this.h-1 && this.cells[i][j]==this.cells[i+1][j]) {
-                    return false;
-                } else if (j < this.w-1 && this.cells[i][j]==this.cells[i][j+1]) {
+                } else if (i < this.h()-1 && this.cells[i][j]==this.cells[i+1][j]) {
+                    return false; // or if there are 2 identical cells next to each other
+                } else if (j < this.w()-1 && this.cells[i][j]==this.cells[i][j+1]) {
                     return false;
                 }
             }
@@ -30,8 +40,8 @@ public class Grid {
     }
 
     boolean has2048() { // checks if there's a 2048 in the cells (game won)
-        for (int i=0; i<this.h; i++) {
-            for (int j=0; j<this.w; j++) {
+        for (int i=0; i<this.h(); i++) {
+            for (int j=0; j<this.w(); j++) {
                 if (this.cells[i][j] >= 2048) {
                     return true;
                 }
@@ -51,34 +61,34 @@ public class Grid {
 
         switch (angle) {
             case 0: // simply copy the array
-                pivotedCells = new int[this.h][this.w];
-                for (int i=0; i<this.h; i++) {
-                    for (int j=0; j<this.w; j++) {
+                pivotedCells = new int[this.h()][this.w()];
+                for (int i=0; i<this.h(); i++) {
+                    for (int j=0; j<this.w(); j++) {
                         pivotedCells[i][j] = this.cells[i][j];
                     }
                 }
                 break;
             case 1: // copy the array but rotate it 90° counter-clockwise
-                pivotedCells = new int[this.w][this.h];
-                for (int i=0; i<this.h; i++) {
-                    for (int j=0; j<this.w; j++) {
-                        pivotedCells[this.w-j][i] = this.cells[i][j];
+                pivotedCells = new int[this.w()][this.h()];
+                for (int i=0; i<this.h(); i++) {
+                    for (int j=0; j<this.w(); j++) {
+                        pivotedCells[this.w()-j][i] = this.cells[i][j];
                     }
                 }
                 break;
             case 2: // copy the array but rotate it 180° counter-clockwise
-                pivotedCells = new int[this.h][this.w];
-                for (int i=0; i<this.h; i++) {
-                    for (int j=0; j<this.w; j++) {
-                        pivotedCells[this.h-i][this.w-j] = this.cells[i][j];
+                pivotedCells = new int[this.h()][this.w()];
+                for (int i=0; i<this.h(); i++) {
+                    for (int j=0; j<this.w(); j++) {
+                        pivotedCells[this.h()-i][this.w()-j] = this.cells[i][j];
                     }
                 }
                 break;
             case 3: // copy the array but rotate it 270° counter-clockwise
-                pivotedCells = new int[this.w][this.h];
-                for (int i=0; i<this.h; i++) {
-                    for (int j=0; j<this.w; j++) {
-                        pivotedCells[j][this.h-i] = this.cells[i][j];
+                pivotedCells = new int[this.w()][this.h()];
+                for (int i=0; i<this.h(); i++) {
+                    for (int j=0; j<this.w(); j++) {
+                        pivotedCells[j][this.h()-i] = this.cells[i][j];
                     }
                 }
                 break;
@@ -87,8 +97,6 @@ public class Grid {
         }
 
         this.cells = pivotedCells;
-        this.h = pivotedCells.length;
-        this.w = pivotedCells[0].length;
     }
 
     void slideNonZeroCellsToTheLeft () {
@@ -96,8 +104,8 @@ public class Grid {
         boolean movedACell = false; 
 
         // Switching all cells' couples like [O, non-zero] to [non-zero, 0]
-        for (int i=0; i<this.h; i++) {
-            for (int j=0; j<this.w-1; j++) {
+        for (int i=0; i<this.h(); i++) {
+            for (int j=0; j<this.w()-1; j++) {
                 if (this.cells[i][j]==0 && this.cells[i][j+1]!=0) {
                     this.cells[i][j] = this.cells[i][j+1];
                     this.cells[i][j+1] = 0;
@@ -119,8 +127,8 @@ public class Grid {
 
         // If two side-by-side cells are equals, add the right one to
         // the left one and reset the right one to zero.
-        for (int i=0; i<this.h; i++) {
-            for (int j=0; j<this.w-1; j++) {
+        for (int i=0; i<this.h(); i++) {
+            for (int j=0; j<this.w()-1; j++) {
                 if (this.cells[i][j]==this.cells[i][j+1]) {
                     this.cells[i][j] *= 2;
                     this.cells[i][j+1] = 0;
@@ -167,8 +175,3 @@ public class Grid {
         System.out.println("Grid just got executed!");
     }
 }
-
-class Game {
-    // todo
-}
-
