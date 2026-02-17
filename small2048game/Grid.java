@@ -1,7 +1,8 @@
 package small2048game;
 
-import java.util.Arrays;
+// import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.Random;
 
 public class Grid {
     int[][] cells;
@@ -13,7 +14,11 @@ public class Grid {
     }
 
     int h() { // height of the grid
-        return this.cells.length;
+        if (this.cells.length > 0 && this.cells[0].length == 0) {
+            return 0;
+        } else {
+            return this.cells.length;
+        }
     }
 
     int w() { // width of the grid
@@ -51,12 +56,12 @@ public class Grid {
     }
 
     void turnGridAround(int angle) {
-        if (angle % 90 != 0) {
+        if ( angle % 90 != 0) {
             throw new InputMismatchException("Invalid angle for turning grid around");
         }
 
         angle = angle / 90;
-        angle = angle % 4;
+        angle = (angle + 4) % 4;
         int[][] pivotedCells;
 
         switch (angle) {
@@ -72,7 +77,7 @@ public class Grid {
                 pivotedCells = new int[this.w()][this.h()];
                 for (int i=0; i<this.h(); i++) {
                     for (int j=0; j<this.w(); j++) {
-                        pivotedCells[this.w()-j][i] = this.cells[i][j];
+                        pivotedCells[this.w()-j-1][i] = this.cells[i][j];
                     }
                 }
                 break;
@@ -80,7 +85,7 @@ public class Grid {
                 pivotedCells = new int[this.h()][this.w()];
                 for (int i=0; i<this.h(); i++) {
                     for (int j=0; j<this.w(); j++) {
-                        pivotedCells[this.h()-i][this.w()-j] = this.cells[i][j];
+                        pivotedCells[this.h()-i-1][this.w()-j-1] = this.cells[i][j];
                     }
                 }
                 break;
@@ -88,7 +93,7 @@ public class Grid {
                 pivotedCells = new int[this.w()][this.h()];
                 for (int i=0; i<this.h(); i++) {
                     for (int j=0; j<this.w(); j++) {
-                        pivotedCells[j][this.h()-i] = this.cells[i][j];
+                        pivotedCells[j][this.h()-i-1] = this.cells[i][j];
                     }
                 }
                 break;
@@ -116,7 +121,6 @@ public class Grid {
         
         // Recursion to check if there are any more couples to switch
         if (movedACell) {
-            System.out.println("starting a recursion iteration"); // to delete
             this.slideNonZeroCellsToTheLeft();
         }
     }
@@ -144,34 +148,63 @@ public class Grid {
         switch (direction) {
             case "left":
                 this.moveCellsToTheLeft();
-
+                break;
             case "right":
                 this.turnGridAround(180);
                 this.moveCellsToTheLeft();
                 this.turnGridAround(-180);
-
+                break;
             case "up":
                 this.turnGridAround(90);
                 this.moveCellsToTheLeft();
                 this.turnGridAround(-90);
-
+                break;
             case "down":
                 this.turnGridAround(270);
                 this.moveCellsToTheLeft();
                 this.turnGridAround(-270);
-            
+                break;
             default:
                 throw new InputMismatchException("Invalid direction for moving cells : "+direction);
         }
     }
 
-    void testDisplayGrid () { // to delete after debug
-        for (int[] line : this.cells) {
-            System.out.println(Arrays.toString(line));
+    void addNewCell() {
+        // Check if there is a free (zero) cell
+        boolean freeCell = false;
+        for (int i=0; i<this.h(); i++) {
+            for (int j=0; j<this.w(); j++) {
+                if (this.cells[i][j] == 0) {
+                    freeCell = true;
+                }
+            }
         }
+        if (!freeCell) { // return if there are no free cell
+            return;
+        }
+
+        // Generate a 2 or a 4
+        Random random = new Random();
+        int newValue = random.nextInt(2);
+        newValue = (newValue + 1) * 2;
+
+        // Randomly find a free cell and assign the new value (2 or 4)
+        int i, j;
+        do {
+            i = random.nextInt(this.h());
+            j = random.nextInt(this.w());
+        } while (this.cells[i][j] != 0);
+
+        this.cells[i][j] = newValue;
     }
 
-    public static void main(String[] args) {
-        System.out.println("Grid just got executed!");
-    }
+    // void testDisplayGrid () { // to delete after debug
+    //     for (int[] line : this.cells) {
+    //         System.out.println(Arrays.toString(line));
+    //     }
+    // }
+
+    // public static void main(String[] args) {
+    //     System.out.println("Grid just got executed!");
+    // }
 }

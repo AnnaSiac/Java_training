@@ -93,4 +93,67 @@ public class GridTest {
         assertTrue(gridWith2048.has2048());
         assertFalse(gridWithout2048.has2048());
     }
+
+    @Test
+    public void turnGridAroundTest90() {
+        int[] angles = {90, -270};
+        for (int angle : angles) {
+            Grid testGrid = new Grid();
+    
+            testGrid.cells[0][2] = 4;
+            testGrid.cells[3][2] = 4;
+    
+            testGrid.turnGridAround(angle);
+    
+            int[][] expectedCells = {{0,0,0,0}, {4,0,0,4}, {0,0,0,0},{0,0,0,0}};
+            for (int i = 0; i < expectedCells.length; i++) {
+                assertArrayEquals(expectedCells[i], testGrid.cells[i]);
+            }
+        }
+    }
+
+    @Test
+    public void turnGridAroundTest180() {
+        Grid testGrid = new Grid();
+
+        testGrid.cells[0][2] = 4;
+        testGrid.cells[3][2] = 4;
+
+        testGrid.turnGridAround(180);
+
+        int[][] expectedCells = {{0,4,0,0}, {0,0,0,0}, {0,0,0,0},{0,4,0,0}};
+        for (int i = 0; i < expectedCells.length; i++) {
+            assertArrayEquals(expectedCells[i], testGrid.cells[i]);
+        }
+    }
+
+    @Test
+    public void turnGridAroundTest270() {
+        Grid testGrid = new Grid();
+
+        testGrid.cells[0][2] = 4;
+        testGrid.cells[3][2] = 4;
+
+        testGrid.turnGridAround(270);
+
+        int[][] expectedCells = {{0,0,0,0}, {0,0,0,0}, {4,0,0,4},{0,0,0,0}};
+        for (int i = 0; i < expectedCells.length; i++) {
+            assertArrayEquals(expectedCells[i], testGrid.cells[i]);
+        }
+    }
+
+    @Test
+    public void turnGridAroundTest360() {
+        Grid testGrid = new Grid();
+
+        testGrid.cells[0][2] = 4;
+        testGrid.cells[3][2] = 4;
+
+        testGrid.turnGridAround(360);
+
+        int[][] expectedCells = {{0,0,4,0}, {0,0,0,0}, {0,0,0,0},{0,0,4,0}};
+        for (int i = 0; i < expectedCells.length; i++) {
+            assertArrayEquals(expectedCells[i], testGrid.cells[i]);
+        }
+    }
 }

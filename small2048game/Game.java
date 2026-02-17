@@ -1,14 +1,14 @@
 package small2048game;
 
-import java.util.Random;
-
 public class Game {
     Grid grid;
     int roundNb;
 
     Game() {
         this.grid = new Grid();
-        this.roundNb = 0;
+        this.grid.addNewCell();
+        this.grid.addNewCell();
+        this.roundNb = 1;
     }
 
     void displayRoundMsg() {
@@ -20,36 +20,7 @@ public class Game {
     }
 
     void displayLostMsg() {
-        System.out.println("Sorry! The grid is blocked, you lost.";)
-    }
-
-    void addNewCell() {
-        // Check if there is a free (zero) cell
-        boolean freeCell = false;
-        for (int i=0; i<this.grid.h(); i++) {
-            for (int j=0; j<this.grid.w(); j++) {
-                if (this.grid.cells[i][j] == 0) {
-                    freeCell = true;
-                }
-            }
-        }
-        if (!freeCell) { // return if there are no free cell
-            return;
-        }
-
-        // Generate a 2 or a 4
-        Random random = new Random();
-        int newValue = random.nextInt(2);
-        newValue = (newValue + 1) * 2;
-
-        // Randomly find a free cell and assign the new value (2 or 4)
-        int i, j;
-        do {
-            i = random.nextInt(this.grid.h());
-            j = random.nextInt(this.grid.w());
-        } while (this.grid.cells[i][j] != 0);
-
-        this.grid.cells[i][j] = newValue;
+        System.out.println("Sorry! The grid is blocked, you lost.");
     }
 
     static int numberLenght(int number) {
@@ -77,12 +48,16 @@ public class Game {
                 switch (nbSize) { // Spaces before and after depends on the number's length
                     case 1:
                         System.out.print(" "+this.grid.cells[i][j]+"  ");
+                        break;
                     case 2:
                         System.out.print(" "+this.grid.cells[i][j]+" ");
+                        break;
                     case 3:
                         System.out.print(this.grid.cells[i][j]+" ");
+                        break;
                     case 4:
                         System.out.print(this.grid.cells[i][j]);
+                        break;
                 }
             }
             // Print the final "|"
